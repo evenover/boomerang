@@ -1,7 +1,7 @@
 // src/App.tsx
 
 import './index.css'; // Importer Tailwind CSS her
-import RegistrationForm from './components/RegistrationForm.tsx';
+import RegistrationForm from './components/RegistrationForm';
 
 const App = () => {
   return (
