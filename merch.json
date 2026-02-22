@@ -63,9 +63,9 @@
     {
         "product":"Alkohol er Godkohol Snapback Cap",
         "description": "Hold solen unna øynene med stil! Vår 'Alkohol er Godkohol' caps har en justerbar stropp for perfekt passform, og er brodert med vår ikoniske boomerang-logo og den morsomme teksten 'Alkohol er Godkohol'. Perfekt for både konkurranse og avslapning.",
-        "color": ["black"],
+        "color": ["black", "white", "navy", "burgundy"],
         "price": 300,
-        "image": {"black": "/merch/alco-cap-black.jpeg"}
+        "image": {"black": "/merch/alco-cap-black.jpeg", "white": "/merch/alco-cap-white.jpeg", "navy": "/merch/alco-cap-navy.jpeg", "burgundy": "/merch/alco-cap-burgundy.jpeg"}
     }
         
 ]
