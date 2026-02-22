@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init('DIN_PUBLIC_KEY');</script>
   <style>
     /* ── RESET & BASE ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -841,15 +843,15 @@
       <div class="checkout-form" id="checkoutForm">
         <input type="text" class="checkout-input" id="custName" placeholder="Ditt navn" required />
         <input type="email" class="checkout-input" id="custEmail" placeholder="Din e-post" required />
-        <input type="tel" class="checkout-input" id="custPhone" placeholder="Telefonnummer (valgfritt)" />
+        <input type="tel" class="checkout-input" id="custPhone" placeholder="Telefonnummer (for Vipps-krav)" required />
         <textarea class="checkout-input" id="custComment" placeholder="Kommentar (valgfritt)" rows="2" style="resize:vertical;"></textarea>
         <button class="add-to-cart-btn" id="sendOrderBtn">📧 Send bestilling</button>
-        <p class="checkout-note">Bestillingen sendes på e-post. Du får bekreftelse tilbake.</p>
+        <p class="checkout-note">💳 Betaling via Vipps-krav til oppgitt nummer.<br>📦 Bestillingen leveres ved ankomst til festivalen.</p>
       </div>
       <div class="checkout-success" id="checkoutSuccess">
         <span>🎉</span>
         <h3>Bestilling sendt!</h3>
-        <p>Vi har mottatt bestillingen din og svarer så fort vi kan.</p>
+        <p>Du mottar Vipps-krav og bekreftelse på e-post. Merchen leveres på festivalen! 🪃</p>
       </div>
     </div>
   </div>
@@ -869,7 +871,9 @@
     const selectedColors = {};
     const selectedSizes = {};
     let cart = JSON.parse(localStorage.getItem('bb_cart') || '[]');
-    const ORDER_EMAIL = 'thefiskclothing@gmail.com';
+    const EMAILJS_SERVICE = 'service_nlceeqp';
+    const EMAILJS_ORDER_TEMPLATE = 'template_78w3hca';
+    const EMAILJS_CONFIRM_TEMPLATE = 'template_oqe7mbe';
 
     // ── COLOR DISPLAY NAMES ──
     const colorNames = {
@@ -1057,7 +1061,8 @@
       this.style.color = form.classList.contains('open') ? 'var(--cream)' : 'var(--dark)';
     };
 
-    document.getElementById('sendOrderBtn').onclick = function() {
+    document.getElementById('sendOrderBtn').onclick = async function() {
+      const btn = this;
       const name = document.getElementById('custName').value.trim();
       const email = document.getElementById('custEmail').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
@@ -1068,57 +1073,67 @@
       document.querySelectorAll('.checkout-input').forEach(i => i.classList.remove('error'));
       if (!name) { document.getElementById('custName').classList.add('error'); valid = false; }
       if (!email || !email.includes('@')) { document.getElementById('custEmail').classList.add('error'); valid = false; }
+      if (!phone || phone.length < 8) { document.getElementById('custPhone').classList.add('error'); valid = false; }
       if (!valid) return;
 
-      // Build order text
+      // Build order lines
       const lines = cart.map(item => {
         const colorDisplay = colorNames[item.color] || item.color;
         const sizePart = item.size ? `, Str: ${item.size}` : '';
         return `• ${item.name} (${colorDisplay}${sizePart}) x${item.qty} — ${item.price * item.qty} kr`;
       });
+      const orderList = lines.join('\n');
+      const total = getCartTotal() + ' kr';
 
-      const orderText = [
-        `NY BESTILLING – Boomerang & Beer Merch`,
-        ``,
-        `Kunde: ${name}`,
-        `E-post: ${email}`,
-        phone ? `Telefon: ${phone}` : '',
-        ``,
-        `Produkter:`,
-        ...lines,
-        ``,
-        `TOTALT: ${getCartTotal()} kr`,
-        comment ? `\nKommentar: ${comment}` : ''
-      ].filter(l => l !== undefined).join('\n');
+      // Template parameters (used in both templates)
+      const params = {
+        customer_name: name,
+        customer_email: email,
+        customer_phone: phone || 'Ikke oppgitt',
+        order_list: orderList,
+        order_total: total,
+        comment: comment || 'Ingen kommentar'
+      };
 
-      // Send via mailto
-      const subject = encodeURIComponent(`Merch-bestilling fra ${name}`);
-      const body = encodeURIComponent(orderText);
-      window.location.href = `mailto:${ORDER_EMAIL}?subject=${subject}&body=${body}`;
+      // Disable button while sending
+      btn.disabled = true;
+      btn.textContent = '⏳ Sender...';
 
-      // Show success
-      document.getElementById('checkoutForm').classList.remove('open');
-      document.getElementById('checkoutBtn').style.display = 'none';
-      document.getElementById('checkoutSuccess').classList.add('show');
+      try {
+        // 1) Send order notification to shop
+        await emailjs.send(EMAILJS_SERVICE, EMAILJS_ORDER_TEMPLATE, params);
 
-      // Clear cart after a short delay
-      setTimeout(() => {
-        cart = [];
-        saveCart();
-        renderCartDrawer();
-        // Reset checkout UI after closing
+        // 2) Send confirmation to customer
+        await emailjs.send(EMAILJS_SERVICE, EMAILJS_CONFIRM_TEMPLATE, params);
+
+        // Show success
+        document.getElementById('checkoutForm').classList.remove('open');
+        document.getElementById('checkoutBtn').style.display = 'none';
+        document.getElementById('checkoutSuccess').classList.add('show');
+
+        // Clear cart after a short delay
         setTimeout(() => {
-          document.getElementById('checkoutSuccess').classList.remove('show');
-          document.getElementById('checkoutBtn').style.display = '';
-          document.getElementById('checkoutBtn').textContent = '📦 Gå til bestilling';
-          document.getElementById('checkoutBtn').style.background = 'linear-gradient(135deg, var(--gold), var(--amber))';
-          document.getElementById('checkoutBtn').style.color = 'var(--dark)';
-          document.getElementById('custName').value = '';
-          document.getElementById('custEmail').value = '';
-          document.getElementById('custPhone').value = '';
-          document.getElementById('custComment').value = '';
-        }, 500);
-      }, 3000);
+          cart = [];
+          saveCart();
+          renderCartDrawer();
+          setTimeout(() => {
+            document.getElementById('checkoutSuccess').classList.remove('show');
+            document.getElementById('checkoutBtn').style.display = '';
+            document.getElementById('checkoutBtn').textContent = '📦 Gå til bestilling';
+            document.getElementById('checkoutBtn').style.background = 'linear-gradient(135deg, var(--gold), var(--amber))';
+            document.getElementById('checkoutBtn').style.color = 'var(--dark)';
+            document.getElementById('custName').value = '';
+            document.getElementById('custEmail').value = '';
+            document.getElementById('custPhone').value = '';
+            document.getElementById('custComment').value = '';
+          }, 500);
+        }, 3000);
+      } catch (err) {
+        console.error('EmailJS error:', err);
+        showToast('Noe gikk galt – prøv igjen!');
+        btn.disabled = false;
+        btn.textContent = '📧 Send bestilling';
+      }
     };
 
     // Close cart on Escape
