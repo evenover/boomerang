@@ -1009,7 +1009,7 @@
         const meta = [colorDisplay, item.size].filter(Boolean).join(' · ');
         row.innerHTML = `
           <div class="cart-item-img">
-            <img src="${item.image}" alt="${item.name}" onerror="this.parentNode.innerHTML='<div style=\\"display:flex;align-items:center;justify-content:center;height:100%;color:rgba(253,246,227,0.15);font-size:1.5rem\\">🪃</div>'"/>
+            <img src="${item.image}" alt="${item.name}" />
           </div>
           <div class="cart-item-info">
             <div class="cart-item-name">${item.name}</div>
@@ -1026,6 +1026,13 @@
           </div>
         `;
         container.appendChild(row);
+        // Handle broken images
+        const img = row.querySelector('.cart-item-img img');
+        if (img) {
+          img.onerror = function() {
+            this.parentNode.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(253,246,227,0.15);font-size:1.5rem">🪃</div>';
+          };
+        }
       });
 
       // Event listeners
