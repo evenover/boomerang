@@ -460,24 +460,26 @@
       const plassIdx = headers.indexOf('Plass');
       if (plassIdx === -1) return [];
 
-      // Sorted column offsets from "Plass":
-      // Plass, Fornavn s, Etternavn s, Fullt navn s, Tittel s,
-      // Hjemsted s, Hjemsted Kort s, Kast s, Mottak s, Øl s, Shot s, Profilbilde s
+      // 2026 sorted columns from "Plass":
+      // 0: Plass, 1: Startnummer, 2: Fornavn s, 3: Etternavn s, 4: Fullt navn s,
+      // 5: Tittel s, 6: Hjemsted s, 7: Hjemsted Kort s,
+      // 8-11: Kast 1-4 s, 12: Kast s, 13-16: Touch 1-4 s, 17: Touch s,
+      // 18-21: Mottak 1-4 s, 22: Mottak s, 23: Øl s, 24: Shot s, 25: Bilde s
       const players = [];
       for (let i = 1; i < rows.length; i++) {
         const r = rows[i];
         const plass = r[plassIdx];
         if (!plass || plass === '') continue;
 
-        const fullName = r[plassIdx + 3] || '';
-        const title = r[plassIdx + 4] || '';
-        const hometown = r[plassIdx + 5] || '';
-        const hometownShort = r[plassIdx + 6] || '';
-        const kast = parseInt(r[plassIdx + 7]) || 0;
-        const mottak = parseInt(r[plassIdx + 8]) || 0;
-        const beer = parseInt(r[plassIdx + 9]) || 0;
-        const shot = parseInt(r[plassIdx + 10]) || 0;
-        const profilePic = r[plassIdx + 11] || '';
+        const fullName = r[plassIdx + 4] || '';
+        const title = r[plassIdx + 5] || '';
+        const hometown = r[plassIdx + 6] || '';
+        const hometownShort = r[plassIdx + 7] || '';
+        const kast = parseInt(r[plassIdx + 12]) || 0;
+        const touch = parseInt(r[plassIdx + 17]) || 0;
+        const mottak = parseInt(r[plassIdx + 22]) || 0;
+        const beer = parseInt(r[plassIdx + 23]) || 0;
+        const shot = parseInt(r[plassIdx + 24]) || 0;
 
         if (!fullName) continue;
 
@@ -486,8 +488,7 @@
           name: fullName,
           title,
           town: hometownShort || hometown,
-          kast, mottak, beer, shot,
-          pic: profilePic
+          kast, touch, mottak, beer, shot
         });
       }
 
@@ -522,11 +523,12 @@
         podiumHTML += `
           <div class="podium-card ${podiumClasses[i]}">
             <div class="podium-rank">${i + 1}</div>
-            ${avatarHTML(p.pic, p.name, 'lg')}
+            ${avatarHTML(null, p.name, 'lg')}
             <div class="podium-name">${p.name}</div>
             <div class="podium-town">${p.town || '—'}</div>
             <div class="podium-stats">
               <div class="podium-stat"><span class="val">${p.kast}</span><span class="lbl">Kast</span></div>
+              <div class="podium-stat"><span class="val">${p.touch}</span><span class="lbl">Touch</span></div>
               <div class="podium-stat"><span class="val">${p.mottak}</span><span class="lbl">Mottak</span></div>
               <div class="podium-stat"><span class="val">${p.beer}</span><span class="lbl">Øl</span></div>
               <div class="podium-stat"><span class="val">${p.shot}</span><span class="lbl">Shot</span></div>
@@ -546,6 +548,7 @@
                   <th>#</th>
                   <th>Spiller</th>
                   <th class="stat-col">Kast</th>
+                  <th class="stat-col">Touch</th>
                   <th class="stat-col">Mottak</th>
                   <th class="stat-col">Øl</th>
                   <th class="stat-col">Shot</th>
@@ -557,7 +560,7 @@
                     <td>${p.rank}</td>
                     <td>
                       <div class="player-cell">
-                        ${avatarHTML(p.pic, p.name, 'sm')}
+                        ${avatarHTML(null, p.name, 'sm')}
                         <div class="player-info">
                           <div class="name">${p.name}</div>
                           <div class="town">${p.town || ''}</div>
@@ -565,6 +568,7 @@
                       </div>
                     </td>
                     <td class="stat-col">${p.kast}</td>
+                    <td class="stat-col catch-col">${p.touch}</td>
                     <td class="stat-col catch-col">${p.mottak}</td>
                     <td class="stat-col beer">${p.beer}</td>
                     <td class="stat-col shot">${p.shot}</td>
