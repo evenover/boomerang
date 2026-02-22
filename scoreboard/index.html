@@ -148,10 +148,11 @@
       background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 1.5rem 1.25rem;
-      width: 180px;
+      padding: 1.5rem 1rem;
+      width: 220px;
       position: relative;
       transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
     }
     .podium-card:hover {
       transform: translateY(-4px);
@@ -230,23 +231,27 @@
     }
     .podium-stats {
       display: flex;
-      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 0.6rem;
       font-size: 0.75rem;
+      width: 100%;
     }
     .podium-stat {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.15rem;
+      gap: 0.1rem;
+      min-width: 32px;
     }
     .podium-stat .val {
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--gold);
     }
     .podium-stat .lbl {
       color: rgba(253,246,227,0.5);
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
@@ -370,7 +375,7 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
       .podium { flex-direction: column; align-items: center; gap: 0.75rem; }
-      .podium-card { width: 100%; max-width: 300px; }
+      .podium-card { width: 100%; max-width: 320px; }
       .podium-card.first, .podium-card.second, .podium-card.third { order: unset; }
       .header h1 { font-size: 1.5rem; }
       thead th, tbody td { padding: 0.6rem 0.5rem; font-size: 0.8rem; }
