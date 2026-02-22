@@ -331,8 +331,8 @@
       border-color: transparent;
     }
 
-    /* Vipps / Contact CTA */
-    .buy-btn {
+    /* Add to cart / Buy CTA */
+    .buy-btn, .add-to-cart-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -350,9 +350,297 @@
       width: 100%;
       justify-content: center;
     }
-    .buy-btn:hover {
+    .buy-btn:hover, .add-to-cart-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 25px rgba(229,184,74,0.35);
+    }
+    .add-to-cart-btn.added {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      pointer-events: none;
+    }
+
+    /* ── CART ICON (NAVBAR) ── */
+    .cart-toggle {
+      position: relative;
+      background: none;
+      border: none;
+      color: var(--cream);
+      font-size: 1.35rem;
+      cursor: pointer;
+      padding: 0.3rem;
+      transition: transform 0.2s;
+    }
+    .cart-toggle:hover { transform: scale(1.15); }
+    .cart-badge {
+      position: absolute;
+      top: -6px; right: -8px;
+      background: linear-gradient(135deg, var(--ember), var(--amber));
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      min-width: 18px; height: 18px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      animation: cartPop 0.3s ease;
+    }
+    .cart-badge.hidden { display: none; }
+    @keyframes cartPop {
+      0% { transform: scale(0); }
+      60% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    /* ── CART DRAWER ── */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      z-index: 10002;
+      width: min(440px, 92vw);
+      background: var(--body);
+      border-left: 1px solid var(--glass-border);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.4);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .cart-header h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold-light), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .cart-close {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--glass-border);
+      color: var(--cream);
+      font-size: 1.1rem;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .cart-close:hover { background: rgba(255,255,255,0.12); }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.5rem;
+    }
+    .cart-empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: rgba(253,246,227,0.35);
+    }
+    .cart-empty span {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      animation: fadeSlideIn 0.3s ease;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .cart-item-img {
+      width: 72px; height: 72px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #1a150c;
+      flex-shrink: 0;
+    }
+    .cart-item-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .cart-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .cart-item-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 0.15rem;
+    }
+    .cart-item-meta {
+      font-size: 0.72rem;
+      color: rgba(253,246,227,0.45);
+      margin-bottom: 0.5rem;
+    }
+    .cart-item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .qty-btn {
+      background: rgba(255,255,255,0.04);
+      border: none;
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      width: 30px; height: 28px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .qty-btn:hover { background: var(--glass-hover); }
+    .qty-val {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--cream);
+      min-width: 28px;
+      text-align: center;
+    }
+    .cart-item-price {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: rgba(253,246,227,0.3);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.2rem;
+      transition: color 0.2s;
+    }
+    .cart-item-remove:hover { color: #e74c3c; }
+
+    .cart-footer {
+      border-top: 1px solid var(--glass-border);
+      padding: 1.2rem 1.5rem;
+    }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .cart-total-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: rgba(253,246,227,0.7);
+    }
+    .cart-total-price {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    /* ── CHECKOUT FORM ── */
+    .checkout-form {
+      display: none;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+    .checkout-form.open { display: flex; }
+    .checkout-input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .checkout-input:focus {
+      border-color: var(--gold);
+    }
+    .checkout-input::placeholder {
+      color: rgba(253,246,227,0.3);
+    }
+    .checkout-input.error {
+      border-color: #e74c3c;
+    }
+    .checkout-note {
+      font-size: 0.72rem;
+      color: rgba(253,246,227,0.35);
+      text-align: center;
+    }
+    .checkout-success {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+      animation: fadeSlideIn 0.4s ease;
+    }
+    .checkout-success.show { display: block; }
+    .checkout-success span { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+    .checkout-success h3 { color: var(--gold); margin-bottom: 0.4rem; }
+    .checkout-success p { color: rgba(253,246,227,0.55); font-size: 0.85rem; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: var(--dark);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      border-radius: 999px;
+      z-index: 10003;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
 
     /* ── FOOTER ── */
@@ -494,6 +782,12 @@
       <li><a href="/">Hjem</a></li>
       <li><a href="/merch-shop/" class="active">Merch 🔥</a></li>
       <li><a href="/scoreboard/">Scoreboard 🏆</a></li>
+      <li>
+        <button class="cart-toggle" id="cartToggle" title="Handlekurv">
+          🛒
+          <span class="cart-badge hidden" id="cartBadge">0</span>
+        </button>
+      </li>
     </ul>
   </nav>
 
@@ -523,6 +817,46 @@
     </div>
   </div>
 
+  <!-- ── CART OVERLAY ── -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <!-- ── CART DRAWER ── -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>🛒 Handlekurv</h2>
+      <button class="cart-close" id="cartClose">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">
+        <span>🪃</span>
+        <p>Handlekurven er tom</p>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div class="cart-total">
+        <span class="cart-total-label">Totalt</span>
+        <span class="cart-total-price" id="cartTotal">0 kr</span>
+      </div>
+      <button class="add-to-cart-btn" id="checkoutBtn" style="background: linear-gradient(135deg, var(--gold), var(--amber));">📦 Gå til bestilling</button>
+      <div class="checkout-form" id="checkoutForm">
+        <input type="text" class="checkout-input" id="custName" placeholder="Ditt navn" required />
+        <input type="email" class="checkout-input" id="custEmail" placeholder="Din e-post" required />
+        <input type="tel" class="checkout-input" id="custPhone" placeholder="Telefonnummer (valgfritt)" />
+        <textarea class="checkout-input" id="custComment" placeholder="Kommentar (valgfritt)" rows="2" style="resize:vertical;"></textarea>
+        <button class="add-to-cart-btn" id="sendOrderBtn">📧 Send bestilling</button>
+        <p class="checkout-note">Bestillingen sendes på e-post. Du får bekreftelse tilbake.</p>
+      </div>
+      <div class="checkout-success" id="checkoutSuccess">
+        <span>🎉</span>
+        <h3>Bestilling sendt!</h3>
+        <p>Vi har mottatt bestillingen din og svarer så fort vi kan.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div class="toast" id="toast"></div>
+
   <!-- ── FOOTER ── -->
   <footer class="footer">
     <p>Boomerang &amp; Beer 2026 · <a href="/">Tilbake til forsiden</a></p>
@@ -532,8 +866,10 @@
     // ── STATE ──
     let allProducts = [];
     let activeCategory = 'all';
-    // Track selected color per product (by index)
     const selectedColors = {};
+    const selectedSizes = {};
+    let cart = JSON.parse(localStorage.getItem('bb_cart') || '[]');
+    const ORDER_EMAIL = 'thefiskclothing@gmail.com';
 
     // ── COLOR DISPLAY NAMES ──
     const colorNames = {
@@ -553,25 +889,260 @@
       return 'Annet';
     }
 
-    // ── LOAD DATA ──
+    // ══════════════════════════════════════
+    //  CART LOGIC
+    // ══════════════════════════════════════
+    function saveCart() {
+      localStorage.setItem('bb_cart', JSON.stringify(cart));
+      updateCartBadge();
+    }
+
+    function addToCart(productIdx, color, size) {
+      const product = allProducts[productIdx];
+      const key = `${productIdx}-${color}-${size || 'none'}`;
+      const existing = cart.find(i => i.key === key);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({
+          key,
+          productIdx,
+          name: product.product,
+          color,
+          size: size || null,
+          price: product.price,
+          image: product.image[color],
+          qty: 1
+        });
+      }
+      saveCart();
+      renderCartDrawer();
+      showToast(`${product.product} lagt i handlekurven!`);
+    }
+
+    function removeFromCart(key) {
+      cart = cart.filter(i => i.key !== key);
+      saveCart();
+      renderCartDrawer();
+    }
+
+    function updateQty(key, delta) {
+      const item = cart.find(i => i.key === key);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty < 1) {
+        removeFromCart(key);
+        return;
+      }
+      saveCart();
+      renderCartDrawer();
+    }
+
+    function getCartTotal() {
+      return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    }
+
+    function getCartCount() {
+      return cart.reduce((sum, i) => sum + i.qty, 0);
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cartBadge');
+      const count = getCartCount();
+      badge.textContent = count;
+      badge.classList.toggle('hidden', count === 0);
+    }
+
+    // ── TOAST ──
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // ══════════════════════════════════════
+    //  CART DRAWER
+    // ══════════════════════════════════════
+    function openCart() {
+      document.getElementById('cartDrawer').classList.add('open');
+      document.getElementById('cartOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      renderCartDrawer();
+    }
+
+    function closeCart() {
+      document.getElementById('cartDrawer').classList.remove('open');
+      document.getElementById('cartOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('cartToggle').onclick = openCart;
+    document.getElementById('cartClose').onclick = closeCart;
+    document.getElementById('cartOverlay').onclick = closeCart;
+
+    function renderCartDrawer() {
+      const container = document.getElementById('cartItems');
+      const footer = document.getElementById('cartFooter');
+      const checkoutForm = document.getElementById('checkoutForm');
+      const checkoutSuccess = document.getElementById('checkoutSuccess');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="cart-empty"><span>🪃</span><p>Handlekurven er tom</p></div>';
+        footer.style.display = 'none';
+        return;
+      }
+
+      footer.style.display = 'block';
+      // Keep checkout state if already open
+      if (!checkoutSuccess.classList.contains('show')) {
+        checkoutBtn.style.display = '';
+      }
+
+      container.innerHTML = '';
+      cart.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        const colorDisplay = colorNames[item.color] || item.color;
+        const meta = [colorDisplay, item.size].filter(Boolean).join(' · ');
+        row.innerHTML = `
+          <div class="cart-item-img">
+            <img src="${item.image}" alt="${item.name}" onerror="this.parentNode.innerHTML='<div style=\\"display:flex;align-items:center;justify-content:center;height:100%;color:rgba(253,246,227,0.15);font-size:1.5rem\\">🪃</div>'"/>
+          </div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-meta">${meta}</div>
+            <div class="cart-item-bottom">
+              <div class="qty-controls">
+                <button class="qty-btn" data-key="${item.key}" data-delta="-1">−</button>
+                <span class="qty-val">${item.qty}</span>
+                <button class="qty-btn" data-key="${item.key}" data-delta="1">+</button>
+              </div>
+              <span class="cart-item-price">${item.price * item.qty} kr</span>
+              <button class="cart-item-remove" data-key="${item.key}" title="Fjern">&times;</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      // Event listeners
+      container.querySelectorAll('.qty-btn').forEach(btn => {
+        btn.onclick = () => updateQty(btn.dataset.key, parseInt(btn.dataset.delta));
+      });
+      container.querySelectorAll('.cart-item-remove').forEach(btn => {
+        btn.onclick = () => removeFromCart(btn.dataset.key);
+      });
+
+      document.getElementById('cartTotal').textContent = getCartTotal() + ' kr';
+    }
+
+    // ── CHECKOUT ──
+    document.getElementById('checkoutBtn').onclick = function() {
+      const form = document.getElementById('checkoutForm');
+      form.classList.toggle('open');
+      this.textContent = form.classList.contains('open') ? '← Tilbake' : '📦 Gå til bestilling';
+      this.style.background = form.classList.contains('open')
+        ? 'rgba(255,255,255,0.06)'
+        : 'linear-gradient(135deg, var(--gold), var(--amber))';
+      this.style.color = form.classList.contains('open') ? 'var(--cream)' : 'var(--dark)';
+    };
+
+    document.getElementById('sendOrderBtn').onclick = function() {
+      const name = document.getElementById('custName').value.trim();
+      const email = document.getElementById('custEmail').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const comment = document.getElementById('custComment').value.trim();
+
+      // Validate
+      let valid = true;
+      document.querySelectorAll('.checkout-input').forEach(i => i.classList.remove('error'));
+      if (!name) { document.getElementById('custName').classList.add('error'); valid = false; }
+      if (!email || !email.includes('@')) { document.getElementById('custEmail').classList.add('error'); valid = false; }
+      if (!valid) return;
+
+      // Build order text
+      const lines = cart.map(item => {
+        const colorDisplay = colorNames[item.color] || item.color;
+        const sizePart = item.size ? `, Str: ${item.size}` : '';
+        return `• ${item.name} (${colorDisplay}${sizePart}) x${item.qty} — ${item.price * item.qty} kr`;
+      });
+
+      const orderText = [
+        `NY BESTILLING – Boomerang & Beer Merch`,
+        ``,
+        `Kunde: ${name}`,
+        `E-post: ${email}`,
+        phone ? `Telefon: ${phone}` : '',
+        ``,
+        `Produkter:`,
+        ...lines,
+        ``,
+        `TOTALT: ${getCartTotal()} kr`,
+        comment ? `\nKommentar: ${comment}` : ''
+      ].filter(l => l !== undefined).join('\n');
+
+      // Send via mailto
+      const subject = encodeURIComponent(`Merch-bestilling fra ${name}`);
+      const body = encodeURIComponent(orderText);
+      window.location.href = `mailto:${ORDER_EMAIL}?subject=${subject}&body=${body}`;
+
+      // Show success
+      document.getElementById('checkoutForm').classList.remove('open');
+      document.getElementById('checkoutBtn').style.display = 'none';
+      document.getElementById('checkoutSuccess').classList.add('show');
+
+      // Clear cart after a short delay
+      setTimeout(() => {
+        cart = [];
+        saveCart();
+        renderCartDrawer();
+        // Reset checkout UI after closing
+        setTimeout(() => {
+          document.getElementById('checkoutSuccess').classList.remove('show');
+          document.getElementById('checkoutBtn').style.display = '';
+          document.getElementById('checkoutBtn').textContent = '📦 Gå til bestilling';
+          document.getElementById('checkoutBtn').style.background = 'linear-gradient(135deg, var(--gold), var(--amber))';
+          document.getElementById('checkoutBtn').style.color = 'var(--dark)';
+          document.getElementById('custName').value = '';
+          document.getElementById('custEmail').value = '';
+          document.getElementById('custPhone').value = '';
+          document.getElementById('custComment').value = '';
+        }, 500);
+      }, 3000);
+    };
+
+    // Close cart on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeCart();
+        closeModal();
+      }
+    });
+
+    // ══════════════════════════════════════
+    //  PRODUCTS
+    // ══════════════════════════════════════
     async function loadProducts() {
       try {
         const res = await fetch('/merch.json');
         allProducts = await res.json();
-        // Set default selected color for each product
         allProducts.forEach((p, i) => {
           const colors = Object.keys(p.image);
           selectedColors[i] = colors[0];
+          if (p.size && p.size.length) selectedSizes[i] = null; // no default size
         });
         buildCategoryBar();
         renderProducts();
+        updateCartBadge();
       } catch (err) {
         document.getElementById('productsGrid').innerHTML =
           '<p class="loading">Kunne ikke laste produkter. Prøv igjen senere.</p>';
       }
     }
 
-    // ── CATEGORY BAR ──
     function buildCategoryBar() {
       const cats = new Set();
       allProducts.forEach(p => cats.add(getCategory(p)));
@@ -595,7 +1166,6 @@
       renderProducts();
     }
 
-    // ── RENDER PRODUCTS ──
     function renderProducts() {
       const grid = document.getElementById('productsGrid');
       const filtered = activeCategory === 'all'
@@ -608,13 +1178,12 @@
       }
 
       grid.innerHTML = '';
-      filtered.forEach((product, filteredIdx) => {
+      filtered.forEach(product => {
         const realIdx = allProducts.indexOf(product);
         grid.appendChild(buildCard(product, realIdx));
       });
     }
 
-    // ── BUILD CARD ──
     function buildCard(product, idx) {
       const color = selectedColors[idx];
       const imgSrc = product.image[color];
@@ -636,7 +1205,6 @@
       imgWrap.appendChild(priceBadge);
       card.appendChild(imgWrap);
 
-      // Click image to open modal
       imgWrap.style.cursor = 'pointer';
       imgWrap.onclick = () => openModal(product, idx);
 
@@ -649,7 +1217,6 @@
       const desc = el('div', { class: 'product-desc' }, product.description);
       details.appendChild(desc);
 
-      // Read more if description is long
       if (product.description.length > 120) {
         const readMore = el('button', { class: 'read-more-btn' }, 'Les mer');
         readMore.onclick = () => {
@@ -687,10 +1254,12 @@
         sizeSec.appendChild(el('label', {}, 'Størrelse'));
         const sizeOpts = el('div', { class: 'size-options' });
         product.size.forEach(s => {
-          const btn = el('button', { class: 'size-btn' }, s);
+          const btn = el('button', {
+            class: 'size-btn' + (selectedSizes[idx] === s ? ' active' : '')
+          }, s);
           btn.onclick = () => {
-            sizeOpts.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            selectedSizes[idx] = s;
+            renderProducts();
           };
           sizeOpts.appendChild(btn);
         });
@@ -698,19 +1267,33 @@
         details.appendChild(sizeSec);
       }
 
-      // Buy button
-      const buyBtn = el('a', {
-        class: 'buy-btn',
-        href: '#',
-        onclick: 'return false;'
-      }, '💬 Send melding for å bestille');
-      details.appendChild(buyBtn);
+      // Add to cart button
+      const addBtn = el('button', { class: 'add-to-cart-btn' }, '🛒 Legg i handlekurv');
+      addBtn.onclick = () => {
+        const chosenColor = selectedColors[idx];
+        const chosenSize = selectedSizes[idx] || null;
+        // Require size if product has sizes
+        if (product.size && product.size.length > 0 && !chosenSize) {
+          showToast('Velg størrelse først!');
+          return;
+        }
+        addToCart(idx, chosenColor, chosenSize);
+        addBtn.textContent = '✓ Lagt til!';
+        addBtn.classList.add('added');
+        setTimeout(() => {
+          addBtn.textContent = '🛒 Legg i handlekurv';
+          addBtn.classList.remove('added');
+        }, 1500);
+      };
+      details.appendChild(addBtn);
 
       card.appendChild(details);
       return card;
     }
 
-    // ── MODAL ──
+    // ══════════════════════════════════════
+    //  MODAL
+    // ══════════════════════════════════════
     function openModal(product, idx) {
       const modal = document.getElementById('modal');
       const color = selectedColors[idx];
@@ -727,7 +1310,7 @@
       body.appendChild(el('div', { class: 'modal-price' }, `${product.price} kr`));
       body.appendChild(el('div', { class: 'modal-desc' }, product.description));
 
-      // Color swatches in modal
+      // Color swatches
       if (colors.length > 1) {
         const colorSec = el('div', { class: 'color-section' });
         colorSec.appendChild(el('label', {}, `Farge: ${colorNames[color] || color}`));
@@ -749,16 +1332,19 @@
         body.appendChild(colorSec);
       }
 
-      // Size selector in modal
+      // Size selector
       if (product.size && product.size.length > 0) {
         const sizeSec = el('div', { class: 'size-section' });
         sizeSec.appendChild(el('label', {}, 'Størrelse'));
         const sizeOpts = el('div', { class: 'size-options' });
         product.size.forEach(s => {
-          const btn = el('button', { class: 'size-btn' }, s);
+          const btn = el('button', {
+            class: 'size-btn' + (selectedSizes[idx] === s ? ' active' : '')
+          }, s);
           btn.onclick = () => {
-            sizeOpts.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            selectedSizes[idx] = s;
+            openModal(product, idx);
+            renderProducts();
           };
           sizeOpts.appendChild(btn);
         });
@@ -766,12 +1352,24 @@
         body.appendChild(sizeSec);
       }
 
-      const buyBtn = el('a', {
-        class: 'buy-btn',
-        href: '#',
-        onclick: 'return false;'
-      }, '💬 Send melding for å bestille');
-      body.appendChild(buyBtn);
+      // Add to cart in modal
+      const addBtn = el('button', { class: 'add-to-cart-btn' }, '🛒 Legg i handlekurv');
+      addBtn.onclick = () => {
+        const chosenColor = selectedColors[idx];
+        const chosenSize = selectedSizes[idx] || null;
+        if (product.size && product.size.length > 0 && !chosenSize) {
+          showToast('Velg størrelse først!');
+          return;
+        }
+        addToCart(idx, chosenColor, chosenSize);
+        addBtn.textContent = '✓ Lagt til!';
+        addBtn.classList.add('added');
+        setTimeout(() => {
+          addBtn.textContent = '🛒 Legg i handlekurv';
+          addBtn.classList.remove('added');
+        }, 1500);
+      };
+      body.appendChild(addBtn);
 
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -779,16 +1377,15 @@
 
     function closeModal() {
       document.getElementById('modal').classList.remove('open');
-      document.body.style.overflow = '';
+      if (!document.getElementById('cartDrawer').classList.contains('open')) {
+        document.body.style.overflow = '';
+      }
     }
 
     document.getElementById('modalClose').onclick = closeModal;
     document.getElementById('modal').onclick = (e) => {
       if (e.target === document.getElementById('modal')) closeModal();
     };
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
 
     // ── HELPERS ──
     function el(tag, attrs, text) {
