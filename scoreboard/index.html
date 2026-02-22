@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/boomerangright.svg" />
+  <title>Scoreboard – Boomerang & Beer 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark: #0d0a04;
+      --body: #151009;
+      --gold: #e5b84a;
+      --gold-light: #f5dc7a;
+      --amber: #d4762e;
+      --ember: #b8461b;
+      --cream: #fdf6e3;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(229,184,74,0.15);
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--dark);
+      color: var(--cream);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── GRAIN ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      padding: 2.5rem 1rem 1.5rem;
+      background: var(--body);
+      border-bottom: 1px solid var(--glass-border);
+      position: relative;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+    .header-logo {
+      height: 48px;
+      margin-bottom: 0.75rem;
+      filter: drop-shadow(0 0 20px rgba(229,184,74,0.3));
+    }
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+    }
+    .header h1 span {
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header p {
+      color: var(--gold-light);
+      font-size: 0.9rem;
+      margin-top: 0.4rem;
+      opacity: 0.7;
+    }
+    .back-link {
+      position: absolute;
+      top: 1rem;
+      left: 1.5rem;
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .back-link:hover { opacity: 1; }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      background: rgba(229,184,74,0.04);
+      border-bottom: 1px solid var(--glass-border);
+      font-size: 0.8rem;
+      color: rgba(253,246,227,0.5);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: blink 2s ease-in-out infinite;
+    }
+    .status-dot.error { background: #f87171; animation: none; }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── SCOREBOARD CONTAINER ── */
+    .scoreboard {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    /* ── PODIUM (top 3) ── */
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding: 1rem 0;
+    }
+    .podium-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.25rem;
+      width: 180px;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .podium-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3), 0 0 30px rgba(229,184,74,0.06);
+    }
+    .podium-card.first {
+      order: 2;
+      border-color: rgba(229,184,74,0.35);
+      background: rgba(229,184,74,0.06);
+      padding-bottom: 2rem;
+    }
+    .podium-card.second { order: 1; }
+    .podium-card.third { order: 3; }
+
+    .podium-rank {
+      position: absolute;
+      top: -14px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+    }
+    .first .podium-rank {
+      background: linear-gradient(135deg, #ffd700, #daa520);
+      color: #1a1207;
+      box-shadow: 0 0 16px rgba(255,215,0,0.4);
+    }
+    .second .podium-rank {
+      background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+      color: #1a1207;
+    }
+    .third .podium-rank {
+      background: linear-gradient(135deg, #cd7f32, #a0522d);
+      color: #fdf6e3;
+    }
+
+    .podium-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--glass-border);
+      margin: 0.75rem 0 0.6rem;
+      background: var(--body);
+    }
+    .podium-avatar-placeholder {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--glass-border);
+      margin: 0.75rem 0 0.6rem;
+      background: var(--body);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .podium-name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 0.15rem;
+    }
+    .podium-town {
+      font-size: 0.75rem;
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      opacity: 0.8;
+    }
+    .podium-stats {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+    }
+    .podium-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+    }
+    .podium-stat .val {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+    .podium-stat .lbl {
+      color: rgba(253,246,227,0.5);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── TABLE (rank 4+) ── */
+    .table-wrap {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      padding: 0.85rem 1rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(253,246,227,0.45);
+      font-weight: 700;
+      text-align: left;
+      background: rgba(0,0,0,0.2);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    thead th:first-child { text-align: center; width: 50px; }
+    thead th.stat-col { text-align: center; width: 65px; }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      transition: background 0.2s;
+    }
+    tbody tr:hover {
+      background: rgba(229,184,74,0.04);
+    }
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody td {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+    tbody td:first-child {
+      text-align: center;
+      font-weight: 800;
+      color: rgba(253,246,227,0.4);
+      font-size: 0.85rem;
+    }
+    td.stat-col {
+      text-align: center;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    td.stat-col.beer { color: var(--gold); }
+    td.stat-col.shot { color: var(--amber); }
+    td.stat-col.catch-col { color: #4ade80; }
+
+    .player-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .player-avatar-sm {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--glass-border);
+      background: var(--body);
+      flex-shrink: 0;
+    }
+    .player-avatar-sm-placeholder {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--glass-border);
+      background: var(--body);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .player-info .name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .player-info .town {
+      font-size: 0.72rem;
+      color: rgba(253,246,227,0.4);
+      margin-top: 0.1rem;
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+    .loading .spinner {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--glass-border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      text-align: center;
+      padding: 3rem;
+      color: #f87171;
+      font-weight: 600;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .podium { flex-direction: column; align-items: center; gap: 0.75rem; }
+      .podium-card { width: 100%; max-width: 300px; }
+      .podium-card.first, .podium-card.second, .podium-card.third { order: unset; }
+      .header h1 { font-size: 1.5rem; }
+      thead th, tbody td { padding: 0.6rem 0.5rem; font-size: 0.8rem; }
+      .player-cell { gap: 0.5rem; }
+      .player-avatar-sm, .player-avatar-sm-placeholder { width: 30px; height: 30px; }
+      .back-link { position: static; display: block; margin-bottom: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <a href="/" class="back-link">← Tilbake</a>
+    <img src="/boomerangright.svg" alt="Boomerang" class="header-logo" />
+    <h1><span>Scoreboard</span> 2026</h1>
+    <p>Oppdateres automatisk hvert 30. sekund</p>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Kobler til...</span>
+  </div>
+
+  <!-- SCOREBOARD -->
+  <div class="scoreboard" id="scoreboard">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Laster scoreboard...</div>
+    </div>
+  </div>
+
+  <script>
+    const SHEET_ID = '1ahtnrDJJT6IXHLaL-FkgHb52VJAZIh_UMzA748Xj5D0';
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+    const REFRESH_MS = 30000;
+
+    // ── Parse CSV ──
+    function parseCSV(text) {
+      const rows = [];
+      let current = '';
+      let inQuotes = false;
+      let row = [];
+
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQuotes) {
+          if (ch === '"' && text[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else if (ch === '"') {
+            inQuotes = false;
+          } else {
+            current += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === ',') {
+            row.push(current.trim());
+            current = '';
+          } else if (ch === '\n' || (ch === '\r' && text[i + 1] === '\n')) {
+            row.push(current.trim());
+            current = '';
+            rows.push(row);
+            row = [];
+            if (ch === '\r') i++;
+          } else {
+            current += ch;
+          }
+        }
+      }
+      if (current || row.length) {
+        row.push(current.trim());
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    // ── Extract sorted columns ──
+    function extractPlayers(rows) {
+      if (rows.length < 2) return [];
+      const headers = rows[0];
+
+      // Find the index of "Plass" column – start of sorted data
+      const plassIdx = headers.indexOf('Plass');
+      if (plassIdx === -1) return [];
+
+      // Sorted column offsets from "Plass":
+      // Plass, Fornavn s, Etternavn s, Fullt navn s, Tittel s,
+      // Hjemsted s, Hjemsted Kort s, Kast s, Mottak s, Øl s, Shot s, Profilbilde s
+      const players = [];
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        const plass = r[plassIdx];
+        if (!plass || plass === '') continue;
+
+        const fullName = r[plassIdx + 3] || '';
+        const title = r[plassIdx + 4] || '';
+        const hometown = r[plassIdx + 5] || '';
+        const hometownShort = r[plassIdx + 6] || '';
+        const kast = parseInt(r[plassIdx + 7]) || 0;
+        const mottak = parseInt(r[plassIdx + 8]) || 0;
+        const beer = parseInt(r[plassIdx + 9]) || 0;
+        const shot = parseInt(r[plassIdx + 10]) || 0;
+        const profilePic = r[plassIdx + 11] || '';
+
+        if (!fullName) continue;
+
+        players.push({
+          rank: parseInt(plass),
+          name: fullName,
+          title,
+          town: hometownShort || hometown,
+          kast, mottak, beer, shot,
+          pic: profilePic
+        });
+      }
+
+      return players.sort((a, b) => a.rank - b.rank);
+    }
+
+    // ── Avatar helper ──
+    function avatarHTML(pic, name, size) {
+      if (pic) {
+        const cls = size === 'lg' ? 'podium-avatar' : 'player-avatar-sm';
+        return `<img src="${pic}" alt="${name}" class="${cls}" onerror="this.outerHTML='${placeholderHTML(name, size)}'"/>`;
+      }
+      return placeholderHTML(name, size);
+    }
+
+    function placeholderHTML(name, size) {
+      const cls = size === 'lg' ? 'podium-avatar-placeholder' : 'player-avatar-sm-placeholder';
+      const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+      return `<div class="${cls}">${initials}</div>`;
+    }
+
+    // ── Render ──
+    function render(players) {
+      const el = document.getElementById('scoreboard');
+
+      if (!players.length) {
+        el.innerHTML = '<div class="error-msg">Ingen spillere funnet.</div>';
+        return;
+      }
+
+      const top3 = players.slice(0, 3);
+      const rest = players.slice(3);
+
+      // Podium
+      const podiumClasses = ['first', 'second', 'third'];
+      const medals = ['🥇', '🥈', '🥉'];
+      let podiumHTML = '<div class="podium">';
+
+      top3.forEach((p, i) => {
+        podiumHTML += `
+          <div class="podium-card ${podiumClasses[i]}">
+            <div class="podium-rank">${i + 1}</div>
+            ${avatarHTML(p.pic, p.name, 'lg')}
+            <div class="podium-name">${p.name}</div>
+            <div class="podium-town">${p.town || '—'}</div>
+            <div class="podium-stats">
+              <div class="podium-stat"><span class="val">${p.kast}</span><span class="lbl">Kast</span></div>
+              <div class="podium-stat"><span class="val">${p.mottak}</span><span class="lbl">Mottak</span></div>
+              <div class="podium-stat"><span class="val">${p.beer}</span><span class="lbl">Øl</span></div>
+              <div class="podium-stat"><span class="val">${p.shot}</span><span class="lbl">Shot</span></div>
+            </div>
+          </div>`;
+      });
+      podiumHTML += '</div>';
+
+      // Table
+      let tableHTML = '';
+      if (rest.length) {
+        tableHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Spiller</th>
+                  <th class="stat-col">Kast</th>
+                  <th class="stat-col">Mottak</th>
+                  <th class="stat-col">Øl</th>
+                  <th class="stat-col">Shot</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rest.map(p => `
+                  <tr>
+                    <td>${p.rank}</td>
+                    <td>
+                      <div class="player-cell">
+                        ${avatarHTML(p.pic, p.name, 'sm')}
+                        <div class="player-info">
+                          <div class="name">${p.name}</div>
+                          <div class="town">${p.town || ''}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="stat-col">${p.kast}</td>
+                    <td class="stat-col catch-col">${p.mottak}</td>
+                    <td class="stat-col beer">${p.beer}</td>
+                    <td class="stat-col shot">${p.shot}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>`;
+      }
+
+      el.innerHTML = podiumHTML + tableHTML;
+    }
+
+    // ── Fetch & update ──
+    async function fetchData() {
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      try {
+        const res = await fetch(CSV_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const csv = await res.text();
+        const rows = parseCSV(csv);
+        const players = extractPlayers(rows);
+        render(players);
+        dot.classList.remove('error');
+        const now = new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        text.textContent = `Sist oppdatert: ${now}`;
+      } catch (err) {
+        console.error('Fetch error:', err);
+        dot.classList.add('error');
+        text.textContent = `Feil ved lasting – prøver igjen...`;
+      }
+    }
+
+    // ── Init ──
+    fetchData();
+    setInterval(fetchData, REFRESH_MS);
+  </script>
+</body>
+</html>
