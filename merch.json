@@ -1,0 +1,71 @@
+[
+    {
+        "product": "Boomerang Tee",
+        "description": "Helrå boomerang tee. Brodert boomerang på midten av brystet. Komfortabel og perfekt for sommeren.",
+        "size": ["S", "M", "L", "XL", "XXL", "3XL"],
+        "color": ["white", "black", "navy"],
+        "price": 300,
+        "image": {"white": "/merch/boomerang-tee-white.jpeg", "black": "/merch/boomerang-tee-black.jpeg", "navy": "/merch/boomerang-tee-navy.jpeg"}
+    },
+    {
+        "product": "Boomerang Pattern Tee",
+        "description": "Vår boomerang pattern tee er en fargerik og livlig t-skjorte som feirer vår kjærlighet til boomerangkasting. Med et unikt og iøynefallende mønster av boomeranger i forskjellige farger og størrelser, er denne t-skjorten perfekt for å vise frem din entusiasme for sporten. Den er laget av mykt og pustende materiale, og har en klassisk passform som passer for alle.",
+        "size": ["S", "M", "L", "XL", "XXL", "3XL"],
+        "color": ["white", "black", "navy"],
+        "price": 300,
+        "image": {"white": "/merch/pattern-tee-white.jpeg", "black": "/merch/pattern-tee-black.jpeg", "navy": "/merch/pattern-tee-navy.jpeg"}
+    },
+    {
+        "product": "Boomerang Hoodie",
+        "description": "Vår boomerang-hoodie er den perfekte følgesvennen for kjølige kvelder på Viksbråtan. Med en myk og varm fleece på innsiden, og vår ikoniske boomerang-logo brodert på brystet, er denne hoodien både komfortabel og stilig. Den har en romslig hette og en praktisk kengurulomme for å holde hendene varme eller oppbevare småting.",
+        "size": ["S", "M", "L", "XL", "XXL", "3XL"],
+        "color": ["white", "black", "navy", "burgundy"],
+        "price": 500,
+        "image": {"white": "/merch/hoodie-white.jpeg", "black": "/merch/hoodie-black.jpeg", "navy": "/merch/hoodie-navy.jpeg", "burgundy": "/merch/hoodie-burgundy.jpeg"}
+    },
+    {
+        "product": "Boomerang Crewneck",
+        "description": "Vår boomerang crewneck er en klassisk og komfortabel genser som passer perfekt for både konkurranse og avslapning. Med en myk og varm fleece på innsiden, og vår ikoniske boomerang-logo brodert på brystet, er denne crewnecken både stilig og funksjonell. Den har en ribbet hals, mansjetter og linning for en tettsittende passform, og er tilgjengelig i flere farger.",
+        "size": ["S", "M", "L", "XL", "XXL", "3XL"],
+        "color": ["white", "black", "navy", "burgundy"],
+        "price": 500,
+        "image": {"white": "/merch/crewneck-white.jpeg", "black": "/merch/crewneck-black.jpeg", "navy": "/merch/crewneck-navy.jpeg", "burgundy": "/merch/crewneck-burgundy.jpeg"}
+    },
+    {
+        "product": "Boomerang Bucket Hat",
+        "description": "Vår boomerang bucket hat er det perfekte tilbehøret for å holde solen unna ansiktet mens du kaster boomerang. Med en bred brem og vår ikoniske boomerang-logo brodert på siden, er denne hatten både funksjonell og stilig. Den er laget av slitesterkt materiale som gir god beskyttelse mot solen, og har en justerbar stropp for en komfortabel passform.",
+        "color": ["grey", "black", "navy"],
+        "price": 300,
+        "image": {"grey": "/merch/bucket-grey.jpeg", "black": "/merch/bucket-black.jpeg", "navy": "/merch/bucket-navy.jpeg"}
+    },
+    {
+        "product": "Boomerang Snapback Cap",
+        "description": "Hold solen unna øynene med stil! Vår caps har en justerbar stropp for perfekt passform, og er brodert med vår ikoniske boomerang-logo. Perfekt for både konkurranse og avslapning.",
+        "color": ["orange", "black", "navy", "burgundy"],
+        "price": 300,
+        "image": {"orange": "/merch/cap-orange.jpeg", "black": "/merch/cap-black.jpeg", "navy": "/merch/cap-navy.jpeg", "burgundy": "/merch/cap-burgundy.jpeg"}
+    },
+    {
+        "product": "Boomerang Beanie",
+        "description": "Hold hodet varmt med vår stilige boomerang-beanie. Laget av mykt og komfortabelt materiale, perfekt for kjølige dager.",
+        "color": ["black", "navy", "burgundy"],
+        "price": 200,
+        "image": {"black": "/merch/beanie-black.jpeg", "navy": "/merch/beanie-navy.jpeg", "burgundy": "/merch/beanie-burgundy.jpeg"}
+    },
+    {
+        "product": "Alkohol er Godkohol tee",
+        "description": "Vår 'Alkohol er Godkohol' tee er en hyllest til vår kjærlighet for både boomerangkasting og godt øl. Med en morsom og iøynefallende tekstdesign, er denne t-skjorten perfekt for å vise frem din entusiasme for både sporten og festlighetene. Den er laget av mykt og pustende materiale, og har en klassisk passform som passer for alle.",
+        "size": ["S", "M", "L", "XL", "XXL", "3XL"],
+        "color": ["white", "black", "navy"],
+        "price": 300,
+        "image": {"white": "/merch/alco-tee-white.jpeg", "black": "/merch/alco-tee-black.jpeg", "navy": "/merch/alco-tee-navy.jpeg"}
+    },
+    {
+        "product":"Alkohol er Godkohol Snapback Cap",
+        "description": "Hold solen unna øynene med stil! Vår 'Alkohol er Godkohol' caps har en justerbar stropp for perfekt passform, og er brodert med vår ikoniske boomerang-logo og den morsomme teksten 'Alkohol er Godkohol'. Perfekt for både konkurranse og avslapning.",
+        "color": ["black"],
+        "price": 300,
+        "image": {"black": "/merch/alco-cap-black.jpeg"}
+    }
+        
+]

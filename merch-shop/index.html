@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/boomerangright.svg" />
+  <title>Merch Shop – Boomerang & Beer 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark: #0d0a04;
+      --body: #151009;
+      --gold: #e5b84a;
+      --gold-light: #f5dc7a;
+      --amber: #d4762e;
+      --ember: #b8461b;
+      --cream: #fdf6e3;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(229,184,74,0.15);
+      --glass-hover: rgba(229,184,74,0.08);
+      --radius: 16px;
+      --radius-lg: 24px;
+      --glow-gold: 0 0 40px rgba(229,184,74,0.25);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--dark);
+      color: var(--cream);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── GRAIN ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 2.5rem;
+      background: rgba(13,10,4,0.85);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--cream);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .nav-brand img {
+      height: 28px;
+      filter: drop-shadow(0 0 6px rgba(229,184,74,0.4));
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      color: rgba(253,246,227,0.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links .active { color: var(--gold); }
+
+    /* ── HEADER ── */
+    .shop-header {
+      text-align: center;
+      padding: 7rem 1.5rem 3rem;
+      background: radial-gradient(ellipse at 50% 80%, rgba(229,184,74,0.08) 0%, transparent 70%);
+    }
+    .shop-header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-light), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.03em;
+    }
+    .shop-header p {
+      margin-top: 0.5rem;
+      color: rgba(253,246,227,0.6);
+      font-size: 1.05rem;
+    }
+
+    /* ── CATEGORY FILTER ── */
+    .category-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      padding: 0 1.5rem 2.5rem;
+    }
+    .cat-btn {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: rgba(253,246,227,0.7);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .cat-btn:hover { background: var(--glass-hover); color: var(--cream); }
+    .cat-btn.active {
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: var(--dark);
+      border-color: transparent;
+    }
+
+    /* ── PRODUCT GRID ── */
+    .products {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    /* ── PRODUCT CARD ── */
+    .product-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--glow-gold);
+      border-color: rgba(229,184,74,0.3);
+    }
+
+    /* Image area */
+    .product-image-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #1a150c;
+      overflow: hidden;
+    }
+    .product-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease, opacity 0.3s ease;
+    }
+    .product-card:hover .product-image-wrap img {
+      transform: scale(1.05);
+    }
+    .product-image-wrap .no-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      color: rgba(253,246,227,0.2);
+      font-size: 3rem;
+    }
+    .price-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: var(--dark);
+      font-weight: 800;
+      font-size: 0.9rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    /* Details area */
+    .product-details {
+      padding: 1.25rem 1.5rem 1.5rem;
+    }
+    .product-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 0.4rem;
+    }
+    .product-desc {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: rgba(253,246,227,0.55);
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .product-desc.expanded {
+      -webkit-line-clamp: unset;
+    }
+    .read-more-btn {
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .read-more-btn:hover { text-decoration: underline; }
+
+    /* Color swatches */
+    .color-section {
+      margin-bottom: 1rem;
+    }
+    .color-section label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(253,246,227,0.45);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .color-swatches {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .swatch {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .swatch:hover { transform: scale(1.15); }
+    .swatch.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(229,184,74,0.4);
+    }
+    .swatch.active::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* Swatch colors */
+    .swatch[data-color="white"]    { background: #f0ece4; }
+    .swatch[data-color="black"]    { background: #1a1a1a; }
+    .swatch[data-color="navy"]     { background: #1a2744; }
+    .swatch[data-color="burgundy"] { background: #6b1d2a; }
+    .swatch[data-color="grey"]     { background: #7a7a7a; }
+    .swatch[data-color="orange"]   { background: #d4762e; }
+    .swatch[data-color="white"].active::after    { color: #333; text-shadow: none; }
+
+    /* Size selector */
+    .size-section {
+      margin-bottom: 1rem;
+    }
+    .size-section label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(253,246,227,0.45);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .size-options {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .size-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(229,184,74,0.15);
+      color: rgba(253,246,227,0.7);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.35rem 0.7rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .size-btn:hover {
+      background: var(--glass-hover);
+      color: var(--cream);
+    }
+    .size-btn.active {
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: var(--dark);
+      border-color: transparent;
+    }
+
+    /* Vipps / Contact CTA */
+    .buy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: var(--dark);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0.7rem 1.6rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      width: 100%;
+      justify-content: center;
+    }
+    .buy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(229,184,74,0.35);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+      border-top: 1px solid var(--glass-border);
+      color: rgba(253,246,227,0.35);
+      font-size: 0.8rem;
+    }
+    .footer a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── PRODUCT MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--body);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+    }
+    .modal-img {
+      aspect-ratio: 1;
+      background: #1a150c;
+      overflow: hidden;
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    }
+    .modal-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .modal-body {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--glass-border);
+      color: var(--cream);
+      font-size: 1.2rem;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.15); }
+    .modal-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold-light), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .modal-price {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .modal-desc {
+      color: rgba(253,246,227,0.65);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .navbar { padding: 0.7rem 1.2rem; }
+      .nav-links { gap: 0.8rem; }
+      .nav-links a { font-size: 0.78rem; }
+      .products { grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0 1rem 3rem; }
+      .product-details { padding: 1rem; }
+      .product-name { font-size: 1rem; }
+      .modal { grid-template-columns: 1fr; }
+      .modal-img { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 50vh; }
+    }
+    @media (max-width: 480px) {
+      .products { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      color: rgba(253,246,227,0.4);
+      font-size: 1.1rem;
+    }
+    .loading .spinner {
+      display: inline-block;
+      width: 40px; height: 40px;
+      border: 3px solid var(--glass-border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <img src="/boomerangright.svg" alt="Boomerang" />
+      <span>Boomerang &amp; Beer</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Hjem</a></li>
+      <li><a href="/merch-shop/" class="active">Merch 🔥</a></li>
+      <li><a href="/scoreboard/">Scoreboard 🏆</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HEADER ── -->
+  <div class="shop-header">
+    <h1>Merch Shop 🔥</h1>
+    <p>Offisiell Boomerang &amp; Beer merch – representer hardest!</p>
+  </div>
+
+  <!-- ── CATEGORY FILTER ── -->
+  <div class="category-bar" id="categoryBar"></div>
+
+  <!-- ── PRODUCTS ── -->
+  <div class="products" id="productsGrid">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Laster produkter...</p>
+    </div>
+  </div>
+
+  <!-- ── MODAL ── -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-img" id="modalImg"></div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <p>Boomerang &amp; Beer 2026 · <a href="/">Tilbake til forsiden</a></p>
+  </footer>
+
+  <script>
+    // ── STATE ──
+    let allProducts = [];
+    let activeCategory = 'all';
+    // Track selected color per product (by index)
+    const selectedColors = {};
+
+    // ── COLOR DISPLAY NAMES ──
+    const colorNames = {
+      white: 'Hvit', black: 'Svart', navy: 'Navy', burgundy: 'Burgunder',
+      grey: 'Grå', orange: 'Oransje'
+    };
+
+    // ── CATEGORIES ──
+    function getCategory(product) {
+      const name = product.product.toLowerCase();
+      if (name.includes('hoodie')) return 'Hettegenser';
+      if (name.includes('crewneck')) return 'Crewneck';
+      if (name.includes('tee')) return 'T-skjorte';
+      if (name.includes('bucket')) return 'Bucket Hat';
+      if (name.includes('snapback') || name.includes('cap')) return 'Caps';
+      if (name.includes('beanie')) return 'Beanie';
+      return 'Annet';
+    }
+
+    // ── LOAD DATA ──
+    async function loadProducts() {
+      try {
+        const res = await fetch('/merch.json');
+        allProducts = await res.json();
+        // Set default selected color for each product
+        allProducts.forEach((p, i) => {
+          const colors = Object.keys(p.image);
+          selectedColors[i] = colors[0];
+        });
+        buildCategoryBar();
+        renderProducts();
+      } catch (err) {
+        document.getElementById('productsGrid').innerHTML =
+          '<p class="loading">Kunne ikke laste produkter. Prøv igjen senere.</p>';
+      }
+    }
+
+    // ── CATEGORY BAR ──
+    function buildCategoryBar() {
+      const cats = new Set();
+      allProducts.forEach(p => cats.add(getCategory(p)));
+      const bar = document.getElementById('categoryBar');
+      bar.innerHTML = '';
+      const allBtn = el('button', { class: 'cat-btn active', 'data-cat': 'all' }, 'Alle');
+      allBtn.onclick = () => filterCategory('all');
+      bar.appendChild(allBtn);
+      cats.forEach(cat => {
+        const btn = el('button', { class: 'cat-btn', 'data-cat': cat }, cat);
+        btn.onclick = () => filterCategory(cat);
+        bar.appendChild(btn);
+      });
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.cat === cat);
+      });
+      renderProducts();
+    }
+
+    // ── RENDER PRODUCTS ──
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      const filtered = activeCategory === 'all'
+        ? allProducts
+        : allProducts.filter(p => getCategory(p) === activeCategory);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="loading">Ingen produkter i denne kategorien.</p>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      filtered.forEach((product, filteredIdx) => {
+        const realIdx = allProducts.indexOf(product);
+        grid.appendChild(buildCard(product, realIdx));
+      });
+    }
+
+    // ── BUILD CARD ──
+    function buildCard(product, idx) {
+      const color = selectedColors[idx];
+      const imgSrc = product.image[color];
+      const colors = Object.keys(product.image);
+
+      const card = el('div', { class: 'product-card' });
+
+      // Image
+      const imgWrap = el('div', { class: 'product-image-wrap' });
+      const img = el('img', { src: imgSrc, alt: product.product, loading: 'lazy' });
+      img.onerror = function() {
+        this.style.display = 'none';
+        const placeholder = el('div', { class: 'no-image' }, '🪃');
+        this.parentNode.appendChild(placeholder);
+      };
+      imgWrap.appendChild(img);
+
+      const priceBadge = el('div', { class: 'price-badge' }, `${product.price} kr`);
+      imgWrap.appendChild(priceBadge);
+      card.appendChild(imgWrap);
+
+      // Click image to open modal
+      imgWrap.style.cursor = 'pointer';
+      imgWrap.onclick = () => openModal(product, idx);
+
+      // Details
+      const details = el('div', { class: 'product-details' });
+
+      const name = el('div', { class: 'product-name' }, product.product);
+      details.appendChild(name);
+
+      const desc = el('div', { class: 'product-desc' }, product.description);
+      details.appendChild(desc);
+
+      // Read more if description is long
+      if (product.description.length > 120) {
+        const readMore = el('button', { class: 'read-more-btn' }, 'Les mer');
+        readMore.onclick = () => {
+          desc.classList.toggle('expanded');
+          readMore.textContent = desc.classList.contains('expanded') ? 'Les mindre' : 'Les mer';
+        };
+        details.appendChild(readMore);
+      }
+
+      // Color swatches
+      if (colors.length > 1) {
+        const colorSec = el('div', { class: 'color-section' });
+        const colorLabel = el('label', {}, `Farge: ${colorNames[color] || color}`);
+        colorSec.appendChild(colorLabel);
+        const swatches = el('div', { class: 'color-swatches' });
+        colors.forEach(c => {
+          const swatch = el('div', {
+            class: 'swatch' + (c === color ? ' active' : ''),
+            'data-color': c,
+            title: colorNames[c] || c
+          });
+          swatch.onclick = () => {
+            selectedColors[idx] = c;
+            renderProducts();
+          };
+          swatches.appendChild(swatch);
+        });
+        colorSec.appendChild(swatches);
+        details.appendChild(colorSec);
+      }
+
+      // Size selector
+      if (product.size && product.size.length > 0) {
+        const sizeSec = el('div', { class: 'size-section' });
+        sizeSec.appendChild(el('label', {}, 'Størrelse'));
+        const sizeOpts = el('div', { class: 'size-options' });
+        product.size.forEach(s => {
+          const btn = el('button', { class: 'size-btn' }, s);
+          btn.onclick = () => {
+            sizeOpts.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          };
+          sizeOpts.appendChild(btn);
+        });
+        sizeSec.appendChild(sizeOpts);
+        details.appendChild(sizeSec);
+      }
+
+      // Buy button
+      const buyBtn = el('a', {
+        class: 'buy-btn',
+        href: '#',
+        onclick: 'return false;'
+      }, '💬 Send melding for å bestille');
+      details.appendChild(buyBtn);
+
+      card.appendChild(details);
+      return card;
+    }
+
+    // ── MODAL ──
+    function openModal(product, idx) {
+      const modal = document.getElementById('modal');
+      const color = selectedColors[idx];
+      const imgSrc = product.image[color];
+      const colors = Object.keys(product.image);
+
+      document.getElementById('modalImg').innerHTML =
+        `<img src="${imgSrc}" alt="${product.product}" onerror="this.parentNode.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;color:rgba(253,246,227,0.15)&quot;>🪃</div>'"/>`;
+
+      const body = document.getElementById('modalBody');
+      body.innerHTML = '';
+
+      body.appendChild(el('div', { class: 'modal-name' }, product.product));
+      body.appendChild(el('div', { class: 'modal-price' }, `${product.price} kr`));
+      body.appendChild(el('div', { class: 'modal-desc' }, product.description));
+
+      // Color swatches in modal
+      if (colors.length > 1) {
+        const colorSec = el('div', { class: 'color-section' });
+        colorSec.appendChild(el('label', {}, `Farge: ${colorNames[color] || color}`));
+        const swatches = el('div', { class: 'color-swatches' });
+        colors.forEach(c => {
+          const swatch = el('div', {
+            class: 'swatch' + (c === color ? ' active' : ''),
+            'data-color': c,
+            title: colorNames[c] || c
+          });
+          swatch.onclick = () => {
+            selectedColors[idx] = c;
+            openModal(product, idx);
+            renderProducts();
+          };
+          swatches.appendChild(swatch);
+        });
+        colorSec.appendChild(swatches);
+        body.appendChild(colorSec);
+      }
+
+      // Size selector in modal
+      if (product.size && product.size.length > 0) {
+        const sizeSec = el('div', { class: 'size-section' });
+        sizeSec.appendChild(el('label', {}, 'Størrelse'));
+        const sizeOpts = el('div', { class: 'size-options' });
+        product.size.forEach(s => {
+          const btn = el('button', { class: 'size-btn' }, s);
+          btn.onclick = () => {
+            sizeOpts.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          };
+          sizeOpts.appendChild(btn);
+        });
+        sizeSec.appendChild(sizeOpts);
+        body.appendChild(sizeSec);
+      }
+
+      const buyBtn = el('a', {
+        class: 'buy-btn',
+        href: '#',
+        onclick: 'return false;'
+      }, '💬 Send melding for å bestille');
+      body.appendChild(buyBtn);
+
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('modalClose').onclick = closeModal;
+    document.getElementById('modal').onclick = (e) => {
+      if (e.target === document.getElementById('modal')) closeModal();
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // ── HELPERS ──
+    function el(tag, attrs, text) {
+      const e = document.createElement(tag);
+      if (attrs) Object.entries(attrs).forEach(([k, v]) => {
+        if (k === 'class') e.className = v;
+        else if (k === 'onclick') e.setAttribute('onclick', v);
+        else e.setAttribute(k, v);
+      });
+      if (text) e.textContent = text;
+      return e;
+    }
+
+    // ── INIT ──
+    loadProducts();
+  </script>
+</body>
+</html>
