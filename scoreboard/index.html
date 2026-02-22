@@ -496,14 +496,6 @@
 
     // ── Avatar helper ──
     function avatarHTML(pic, name, size) {
-      if (pic) {
-        const cls = size === 'lg' ? 'podium-avatar' : 'player-avatar-sm';
-        return `<img src="${pic}" alt="${name}" class="${cls}" onerror="this.outerHTML='${placeholderHTML(name, size)}'"/>`;
-      }
-      return placeholderHTML(name, size);
-    }
-
-    function placeholderHTML(name, size) {
       const cls = size === 'lg' ? 'podium-avatar-placeholder' : 'player-avatar-sm-placeholder';
       const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
       return `<div class="${cls}">${initials}</div>`;
