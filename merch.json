@@ -25,7 +25,7 @@
     },
     {
         "product": "Boomerang Crewneck",
-        "description": "Vår boomerang crewneck er en klassisk og komfortabel genser som passer perfekt for både konkurranse og avslapning. Med en myk og varm fleece på innsiden, og vår ikoniske boomerang-logo brodert på brystet, er denne crewnecken både stilig og funksjonell. Den har en ribbet hals, mansjetter og linning for en tettsittende passform, og er tilgjengelig i flere farger.",
+        "description": "Vår boomerang crewneck er en klassisk og komfortabel genser som passer perfekt for både konkurranse og avslapning. Med en myk og varm fleece på innsiden, og vår ikoniske boomerang-logo brodert på brystet, er denne crewnecken både stilig og funksjonell.",
         "size": ["S", "M", "L", "XL", "XXL", "3XL"],
         "color": ["white", "black", "navy", "burgundy"],
         "price": 500,
@@ -33,7 +33,7 @@
     },
     {
         "product": "Boomerang Bucket Hat",
-        "description": "Vår boomerang bucket hat er det perfekte tilbehøret for å holde solen unna ansiktet mens du kaster boomerang. Med en bred brem og vår ikoniske boomerang-logo brodert på siden, er denne hatten både funksjonell og stilig. Den er laget av slitesterkt materiale som gir god beskyttelse mot solen, og har en justerbar stropp for en komfortabel passform.",
+        "description": "Vår boomerang bucket hat er det perfekte tilbehøret for å holde solen unna ansiktet mens du kaster boomerang. Med en bred brem og vår ikoniske boomerang-logo brodert på siden, er denne hatten både funksjonell og stilig. Den er laget av slitesterkt materiale som gir god beskyttelse mot solen.",
         "color": ["grey", "black", "navy"],
         "price": 300,
         "image": {"grey": "/merch/bucket-grey.jpeg", "black": "/merch/bucket-black.jpeg", "navy": "/merch/bucket-navy.jpeg"}
